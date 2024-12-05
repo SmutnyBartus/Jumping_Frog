@@ -48,6 +48,7 @@ typedef struct{
 typedef struct{
     int x, y;
     char model;
+    int speed;
 } CAR;
 
 void shuffle(int arr[], int n) {
@@ -88,6 +89,7 @@ void init_car(WINDOW* window, CAR* car, int n){
         car->model = '>';
     }
     car->y = n;
+    car->speed = rand() % 10 + 1;
     draw_car(window, *car);
 }
 
@@ -144,8 +146,8 @@ void mainloop(WINDOW* window) {
 
 
         //handle car movement
-        if(frames == 4){
-            for(int i = 0; i < 10; i++){
+        for(int i = 0; i < 10; i++){
+            if(frames % car[i].speed == 0){
                 mvwaddch(window, car[i].y, car[i].x, ' ');
 
                 if(car[i].model == '<')
@@ -162,10 +164,8 @@ void mainloop(WINDOW* window) {
                 }
 
                 draw_car(window, car[i]);
-
-                frames = 0;
             }
-        }
+        }   
 
 
         //handle frog movement
@@ -189,6 +189,9 @@ void mainloop(WINDOW* window) {
         // Wait
         frog_frames++;
         frames++;
+
+        if(frames > 1000)
+            frames = 0;
         usleep(33333);
     }
 }
